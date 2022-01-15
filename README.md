@@ -74,7 +74,7 @@ Pour coder chaque fonction sur GPU, l'entier idx sera essentiel:
 
 Il nous permet d'avoir l'identifiant du thread du block dans lequel nous nous situons. C'est avec cela que l'on peut déterminer le coefficient de la matrice a calculer.
 
-Une fois ces deux fonctions codées, nous pouvons mettre en place notre reseau.
+Une fois ces deux fonctions codées, nous pouvons mettre en place notre réseau.
 
 # LeNet-5 sur Python 
 
