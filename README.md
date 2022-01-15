@@ -46,10 +46,13 @@ Voici un example de code qui fait cela:
 M_d est l'adresse de la memoire allouer dans le GPU.
 
 Nous devons aussi copier l'information d'un environnement vers une autre. GPU-->CPU ou CPU-->GPU.
-Nous avons des fonctions cudaMemCpy qui nous permettent cela.
+Nous avons des fonctions cudaMemCpy qui nous permettent cela:
 
     cudaMemcpy(raw_data,M_d,n*p*size_f,cudaMemcpyDeviceToHost);
     
+Dernierement, pour appeller une fonction "global" nous devons utiliser une synthaxe specialle:
+
+
 
 Avec ces outils, nous pouvons essayer de d'implementer ce reseau sur GPU.
 
