@@ -11,7 +11,7 @@ __global__ void convolve2d(float* C, float* M, float* K, int n, int ksize){
     
     for(int i=0; i<ksize;i++){
         for (int j=0; j<ksize;j++){
-            tmp+=K[(ksize-i-1)*ksize+(ksize-j-1)+w*5*5]*M[(x+i)*n+y+j+w*n*n];
+            tmp+=K[(ksize-i-1)*ksize+(ksize-j-1)+w*5*5]*M[(x+i)*n+y+j+w*n*n]; // On fait attention de "retourner" le kernel avant la multiplication pour faire la convolution 
         }
     }
     
