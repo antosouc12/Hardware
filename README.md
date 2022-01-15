@@ -1,6 +1,8 @@
 # Hardware
 Module Hardware CUDA
 
+# TP Hardware for Signal Processing
+
 Lors des sceances de HSP, nous allons tenter d'implementer une reseau de neurones a la main sur GPU. Nous allons essayer d'implement un LeNet-5.
 
 L'agolorithme LeNet-5 est un reseau de neurones qui permet de classifier des images de chiffres ecrits a la main. 
@@ -52,12 +54,19 @@ Nous avons des fonctions cudaMemCpy qui nous permettent cela:
     
 Dernierement, pour appeller une fonction "global" nous devons utiliser une synthaxe specialle:
 
+     FillMatrix<<<Nblock,Nthread>>>(M_d,n*p);
+
+Nous devons utiliser des "<<<" et ">>>" entre lesquelles nous precisons le nombre de Block et de Thread que nous voulons utiliser pour cette fonction. 
+On note que l'on peut pas avoir plus de 1024 thread.
 
 
 Avec ces outils, nous pouvons essayer de d'implementer ce reseau sur GPU.
 
 Voici une illustration du reseau LeNet-5:
 ![image](https://user-images.githubusercontent.com/56081832/149637013-b4aeb829-f86e-49e6-8455-15c23cf95750.png)
+
+Les deux fonction importantes a coder sont la convolution et la moyen pooling.
+Dans les deux cas, ce qu'il va nous est essentiel lors du codage sur GPU est:
 
 
 
