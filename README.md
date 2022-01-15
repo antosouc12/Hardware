@@ -4,7 +4,7 @@ Module Hardware CUDA
 Lors des sceances de HSP, nous allons tenter d'implementer une reseau de neurones a la main sur GPU. Nous allons essayer d'implement un LeNet-5.
 
 L'agolorithme LeNet-5 est un reseau de neurones qui permet de classifier des images de chiffres ecrits a la main. 
-Ce reseau est compose de deux couches de convolution, deux couches de subsampling et deux couches fully connected.
+Ce reseau est compose de trois couches de convolution, deux couches de subsampling et deux couches fully connected.
 
 Pour ce faire, nous allons utiliser le language CUDA qui permet de coder sur le GPU. Le but de coder sur GPU est la capacite de faire beaucoup de calcul en parrallele.
 
@@ -47,6 +47,14 @@ M_d est l'adresse de la memoire allouer dans le GPU.
 
 Nous devons aussi copier l'information d'un environnement vers une autre. GPU-->CPU ou CPU-->GPU.
 Nous avons des fonctions cudaMemCpy qui nous permettent cela.
+
+    cudaMemcpy(raw_data,M_d,n*p*size_f,cudaMemcpyDeviceToHost);
+    
+
+Avec ces outils, nous pouvons essayer de d'implementer ce reseau sur GPU.
+
+Voici une illustration du reseau LeNet-5:
+![image](https://user-images.githubusercontent.com/56081832/149637013-b4aeb829-f86e-49e6-8455-15c23cf95750.png)
 
 
 
