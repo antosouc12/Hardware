@@ -68,5 +68,15 @@ Voici une illustration du reseau LeNet-5:
 Les deux fonction importantes a coder sont la convolution et la moyen pooling.
 Dans les deux cas, ce qu'il va nous est essentiel lors du codage sur GPU est:
 
+    int idx=blockIdx.x*blockDim.x+threadIdx.x;
+
+Ceci nous permet d'avoir l'identifiant du thread du block dans lequel nous sommes. C'est avec cela que l'on sait quel coefficient de la matrice a calculer.
+
+Une fois ces deux fonctions coder nous pouvons mettre ne place notre reseau.
+
+
+
+A la place d'entrainer notre reseau a la main, nous allons mettre ne place un reseau de neurone sur python en utilsant tensorflow, entrainer ce modele et exporter les poids.
+
 
 
