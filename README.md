@@ -46,5 +46,7 @@ Voici un example de code qui fait cela:
 M_d est l'adresse de la memoire allouer dans le GPU.
 
 Nous devons aussi copier l'information d'un environnement vers une autre. GPU-->CPU ou CPU-->GPU.
-Nous avons des fonction cudaMemCpy qui nous permettent cela.
+Nous avons des fonctions cudaMemCpy qui nous permettent cela.
+
+
 
