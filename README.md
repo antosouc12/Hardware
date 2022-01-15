@@ -5,82 +5,80 @@ Module Hardware CUDA
 
 # Prise en main de CUDA
 
-Lors des sceances de HSP, nous allons tenter d'implementer une reseau de neurones a la main sur GPU. Nous allons essayer d'implement un LeNet-5.
+Au cours des séances de HSP, nous allons tenter d'implémenter une réseau de neurones 'a la main' sur GPU, le LeNet-5.
 
-L'agolorithme LeNet-5 est un reseau de neurones qui permet de classifier des images de chiffres ecrits a la main. 
-Ce reseau est compose de trois couches de convolution, deux couches de subsampling et deux couches fully connected.
+L'algorithme LeNet-5 est un réseau de neurones qui a été créé dans le but de classer des images de chiffres manuscrits. 
+Ce réseau est constitué de trois couches convolutives, de deux couches de subsampling et deux couches fully connected.
 
-Pour ce faire, nous allons utiliser le language CUDA qui permet de coder sur le GPU. Le but de coder sur GPU est la capacite de faire beaucoup de calcul en parrallele.
+Pour ce faire, nous allons utiliser le language CUDA qui permet de coder sur le GPU. Cela va nous permettre de paralléliser les calculs et ainsi de grandement réduire le temps d'exécution des différents programmes.
 
-Voici une video qui illustre bien cette idee:
+Voici une video qui illustre bien cette idée:
 https://www.youtube.com/watch?v=-P28LKWTzrI&ab_channel=NVIDIA
 
-Le fonctionnement du GPU est le suivant:
+Le GPU fonctionne de la manière suivante:
 
 ![image](https://user-images.githubusercontent.com/56081832/149636392-fc8a8165-ed5f-49ca-9236-af45bd4c419d.png)
 
-Dans le GPU se trouvent des "Blocks" dans lesquelles se trouvent des "Threads". Chaque peut effectuer des calculs en parralleles avec chaques autre Thread de chaque Block.
-Cela nous permet de, par example, calculer tous les elements d'une matrice en meme temps.
+Dans le GPU se trouvent des "Blocks" dans lesquelles se trouvent des "Threads". Chaque thread peut effectuer des calculs en parrallèle avec chaque autre Thread de chaque Block.
+Cela nous permet, par example, de calculer tous les éléments d'une matrice en même temps.
 
 Le rapport du temps de calcul entre le CPU et le GPU peut etre de l'ordre de 1000. 
-On peut utiliser la commande nvprof poru avoir des mesures de temps detaille lors de l'execution d'un programme.
+On peut utiliser la commande nvprof pour avoir des mesures de temps détaillées lors de l'exécution d'un programme.
 
-Pour pouvoir utiliser ces threads et blocks du GPU, nous devons coder dans le language CUDA. 
-Ce language est quasiment du C mais avec des library en plus pour coder sur le GPU.
+Pour pouvoir utiliser ces threads et blocks du GPU, nous devons coder en CUDA. 
+Ce language est très proche du C mais avec des libraries en additionnelles  pour coder sur GPU.
 
-Parmi ces nouvelles fonctionnalites, on trouve de nouveaux prefixes aux fonctions:
+Parmi ces nouvelles fonctionnalités, on ajoute de nouveaux prefixes aux fonctions:
 __host__ , __global__ et __device__
 
-Ces prefixes permettent au compilateur de savoir dans quelle milieu executer la fonction.
+Ces préfixes permettent au compilateur de savoir dans quelle milieu exécuter la fonction.
 
-Une fonction avec le prefixe "host" indique au compilateur d'executer la fonction depuis le CPU dans le CPU.
+Une fonction avec le préfixe "host" indique au compilateur d'exécuter la fonction depuis le CPU dans le CPU.
 
-Une fonction avec le prefixe "global" indique au compilateur d'executer la fonction depuis le CPU dans le GPU.
+Une fonction avec le préfixe "global" indique au compilateur d'exécuter la fonction depuis le CPU dans le GPU.
 
-Une fonction avec le prefixe "device" indique au compilatuer d'executer la fonction depuis le GPU dans le GPU.
+Une fonction avec le préfixe "device" indique au compilatuer d'exécuter la fonction depuis le GPU dans le GPU.
 
-Lors du codage, en plus d'allouer de la memoire dans le CPU, nous devons aussi allouer de la memoire dans le GPU pour stocker les valeurs qui y sont calculees. 
-Voici un example de code qui fait cela:
+Lors du codage, en plus d'allouer de la memoire dans le CPU, nous devons aussi allouer de la memoire dans le GPU pour stocker les valeurs qui y sont calculées. 
+Voici un example de code permet cela:
 
     float *raw_data;    
     raw_data=(float*)malloc(n*p*sizeof(float));
     float *M_d;     
     cudaMalloc((void **) &M_d,size_f*n*p);
 
-M_d est l'adresse de la memoire allouer dans le GPU.
+M_d est l'adresse de la mémoire allouée dans le GPU.
 
 Nous devons aussi copier l'information d'un environnement vers une autre. GPU-->CPU ou CPU-->GPU.
 Nous avons des fonctions cudaMemCpy qui nous permettent cela:
 
     cudaMemcpy(raw_data,M_d,n*p*size_f,cudaMemcpyDeviceToHost);
     
-Dernierement, pour appeller une fonction "global" nous devons utiliser une synthaxe specialle:
+Finalement, pour appeler une fonction "global" nous devons utiliser une synthaxe speciale:
 
      FillMatrix<<<Nblock,Nthread>>>(M_d,n*p);
 
-Nous devons utiliser des "<<<" et ">>>" entre lesquelles nous precisons le nombre de Block et de Thread que nous voulons utiliser pour cette fonction. 
-On note que l'on peut pas avoir plus de 1024 thread.
+Nous devons utiliser des "<<<" et ">>>" entre lesquelles nous precisons le nombre de Blocks et de Threads que nous voulons utiliser pour cette fonction. 
+Notons que l'on ne peut pas avoir plus de 1024 thread.
 
-
-Avec ces outils, nous pouvons essayer de d'implementer ce reseau sur GPU.
 
 # Implementation de LeNet-5
 
 Voici une illustration du reseau LeNet-5:
 ![image](https://user-images.githubusercontent.com/56081832/149637013-b4aeb829-f86e-49e6-8455-15c23cf95750.png)
 
-Les deux fonction importantes a coder sont la convolution et la moyen pooling.
-Dans les deux cas, ce qu'il va nous est essentiel lors du codage sur GPU est:
+Les deux fonction importantes a coder sont: la convolution de deux matrices et la moyen pooling (ou meanpooling) d'une matrice.
+Pour coder chaque fonction sur GPU, l'entier idx sera essentiel:
 
     int idx=blockIdx.x*blockDim.x+threadIdx.x;
 
-Ceci nous permet d'avoir l'identifiant du thread du block dans lequel nous sommes. C'est avec cela que l'on sait quel coefficient de la matrice a calculer.
+Il nous permet d'avoir l'identifiant du thread du block dans lequel nous nous situons. C'est avec cela que l'on peut déterminer le coefficient de la matrice a calculer.
 
-Une fois ces deux fonctions coder nous pouvons mettre ne place notre reseau.
+Une fois ces deux fonctions codées, nous pouvons mettre en place notre reseau.
 
 # LeNet-5 sur Python 
 
-A la place d'entrainer notre reseau a la main, nous allons mettre ne place un reseau de neurone sur python en utilsant tensorflow, entrainer ce modele et exporter les poids.
+A la place d'entrainer notre reseau a la main, nous allons mettre en place un réseau de neurone en python en utilsant tensorflow et keras, entrainer ce modele et exporter les poids.
 
 
 
