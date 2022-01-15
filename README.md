@@ -35,5 +35,13 @@ Une fonction avec le prefixe "global" indique au compilateur d'executer la fonct
 
 Une fonction avec le prefixe "device" indique au compilatuer d'executer la fonction depuis le GPU dans le GPU.
 
+Lors du codage, en plus d'allouer de la memoire dans le CPU, nous devons aussi allouer de la memoire dans le GPU pour stocker les valeurs qui y sont calculees. 
+Voici un example de code qui fait cela:
 
+    float *raw_data;    
+    raw_data=(float*)malloc(n*p*sizeof(float));
+    float *M_d;     
+    cudaMalloc((void **) &M_d,size_f*n*p);
+
+M_d est l'adresse de la memoire allouer dans le GPU.
 
