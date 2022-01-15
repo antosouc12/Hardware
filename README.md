@@ -3,6 +3,8 @@ Module Hardware CUDA
 
 # TP Hardware for Signal Processing
 
+# Prise en main de CUDA
+
 Lors des sceances de HSP, nous allons tenter d'implementer une reseau de neurones a la main sur GPU. Nous allons essayer d'implement un LeNet-5.
 
 L'agolorithme LeNet-5 est un reseau de neurones qui permet de classifier des images de chiffres ecrits a la main. 
@@ -62,6 +64,8 @@ On note que l'on peut pas avoir plus de 1024 thread.
 
 Avec ces outils, nous pouvons essayer de d'implementer ce reseau sur GPU.
 
+# Implementation de LeNet-5
+
 Voici une illustration du reseau LeNet-5:
 ![image](https://user-images.githubusercontent.com/56081832/149637013-b4aeb829-f86e-49e6-8455-15c23cf95750.png)
 
@@ -74,7 +78,7 @@ Ceci nous permet d'avoir l'identifiant du thread du block dans lequel nous somme
 
 Une fois ces deux fonctions coder nous pouvons mettre ne place notre reseau.
 
-
+# LeNet-5 sur Python 
 
 A la place d'entrainer notre reseau a la main, nous allons mettre ne place un reseau de neurone sur python en utilsant tensorflow, entrainer ce modele et exporter les poids.
 
